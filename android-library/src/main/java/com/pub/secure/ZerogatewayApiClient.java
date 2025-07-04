@@ -1,6 +1,7 @@
 package com.pub.secure;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -28,6 +29,7 @@ public class ZerogatewayApiClient {
     private PaymentApiCallback callback;
     private ActivityResultLauncher<Intent> paymentLauncher;
     private boolean isLauncherInitialized = false;
+    ProgressDialog progressDialog;
 
     public interface PaymentApiCallback {
         void onSuccess(String transactionId);
@@ -38,6 +40,10 @@ public class ZerogatewayApiClient {
         if (!(context instanceof FragmentActivity)) {
             throw new IllegalArgumentException("Context must be a FragmentActivity");
         }
+        progressDialog = new ProgressDialog(context);
+        progressDialog.setMessage("Loading...");
+        progressDialog.setCancelable(false);
+
         this.contextRef = new WeakReference<>(context);
         initializePaymentLauncher((FragmentActivity) context);
     }
@@ -85,7 +91,7 @@ public class ZerogatewayApiClient {
         }
 
         this.callback = callback;
-
+        progressDialog.show();
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("public_key", publicKey);
@@ -113,15 +119,18 @@ public class ZerogatewayApiClient {
                             } catch (Exception e) {
                                 callback.onError("Error parsing response: " + e.getMessage(), -5);
                             }
+                            progressDialog.dismiss();
                         }
 
                         @Override
                         public void onError(ANError error) {
                             handleError(error, callback);
+                            progressDialog.dismiss();
                         }
                     });
 
         } catch (Exception e) {
+            progressDialog.dismiss();
             callback.onError("Error creating request: " + e.getMessage(), -6);
         }
     }

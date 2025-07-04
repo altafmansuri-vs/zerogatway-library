@@ -7,5 +7,5 @@ dependencyResolutionManagement {
         maven { url 'https://jitpack.io' }
     }
 }
-rootProject.name = "network-library"
+rootProject.name = "zerogateway-library"
 include ':app', ':android-library'
