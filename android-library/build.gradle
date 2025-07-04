@@ -30,27 +30,33 @@ android {
     buildFeatures {
         compose true
     }
+
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
 }
 
 dependencies {
-
     implementation 'com.github.amitshekhariitbhu.Fast-Android-Networking:android-networking:1.0.4'
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
     implementation 'androidx.appcompat:appcompat:1.7.1'
     implementation 'com.google.android.material:material:1.12.0'
-
 }
 
-//afterEvaluate {
-//    publishing {
-//        publications {
-//            release(MavenPublication) {
-//                from components.release
-//
-//                groupId = 'com.github.altafmansuri-vs'
-//                artifactId = 'network-library-compose'
-//                version = '1.1.5'
-//            }
-//        }
-//    }
-//}
+// Corrected publishing block
+afterEvaluate {
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                groupId = 'com.github.altafmansuri-vs'
+                artifactId = 'zerogatway-library-compose'
+                version = '1.0.0'
+
+                from components.release
+            }
+        }
+    }
+}
